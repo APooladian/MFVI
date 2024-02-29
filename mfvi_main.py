@@ -17,7 +17,7 @@ class MFVI:
 
         self.KL_vals, self.W2_vals = None, None
 
-        self.M_1d, _, self.Q, self.Qinv, means , self.gradent_num = build_M_FAST(dim=self.dim, mesh=self.mesh, truncation=self.trunc)
+        self.M_1d, _, self.Q, self.Qinv, means, self.gradent_num = build_M_FAST(dim=self.dim, mesh=self.mesh, truncation=self.trunc)
     def SPGD(self,alpha, h, h_v, lamb0, batch_size=1, num_iters=1000, tol=1e-3, compute_KL=False, compute_W2=False,ground_cov=None,stopping_cond=0,save_vals=False):
         self.alpha = alpha
         if save_vals:
