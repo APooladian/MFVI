@@ -9,7 +9,7 @@ where $\mathcal{P}(\mathbb{R})^{\otimes d}$ is the space of $d$-dimensional prod
 </p>
 
 ## Examples
-Jupyter notebooks that replicate the experiments found in our paper can be found in [`examples`](./examples), where we compute the mean-field approximation to: a product Gaussian mixture example (which is itself), a non-isotropic Gaussian, and a posterior arises from a synthetic Bayesian logistic regression problem.
+Jupyter notebooks that replicate the experiments found in our paper can be found in [`examples`](./examples), where we compute the mean-field approximation to: a product Gaussian mixture example, a non-isotropic Gaussian, and a posterior arises from a synthetic Bayesian logistic regression problem.
 
 ## Basic usage
 At the core is one method `MFVI_obj` which performs all the computation. The user is required to pass in the appropriate truncation parameter, mesh-size, and $V$ and $\nabla V$, as well as some hyper-parameters for the optimization (e.g., step-size, number of iterations, number of stochastic samples).
