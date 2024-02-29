@@ -26,38 +26,18 @@ def compute_potential_gradient_mc_highd(grad_V, M_1d, dim, α, λ, v, x_samples,
     
     return grad, v_grad
 
-def compute_potential_gradient_mc_highd_lamb(grad_V, M_1d, dim, α, λ, v, x_samples):
-    d, n = x_samples.shape
-    J = len(M_1d)
-    grad = np.zeros(shape=(d, J))
-    T = compute_T(M_1d, α, λ, v)
-    grad_V_pushed = grad_V(T(x_samples.T))
-    for i in range(d):
-        for j in range(J):
-            grad[i, j] = np.average(M_1d[j](x_samples[i,:].T) * grad_V_pushed[:, i])
-    
-    return grad
-
-def compute_potential_gradient_mc_highd_v(grad_V, M_1d, dim, α, λ, v, x_samples):
-    d, n = x_samples.shape
-    J = len(M_1d)
-    grad = np.zeros(shape=(d, J))
-    T = compute_T(M_1d, α, λ, v)
-    grad_V_pushed = grad_V(T(x_samples.T))
-    return np.average(grad_V_pushed, axis=0)
-
 ############################################
 #### Compute \nabla \cH(\mu_\lambda) #######
 ############################################
 
-def compute_entropy_gradient_FAST_highd(alpha, lamb, mesh, gradent_numerator):
+def compute_entropy_gradient_highd(alpha, lamb, mesh, gradent_numerator):
     return gradent_numerator/(lamb + alpha*mesh)
 
 ############################################
 ####### Compute KL(\mu_\lambda\|\pi) #######
 ############################################
 
-def compute_KL_mc_FAST(neg_log_pi, M_1d, mesh, trunc, α, λ, v, ρ_samples):
+def compute_KL_mc(neg_log_pi, M_1d, mesh, trunc, α, λ, v, ρ_samples):
     d, n = ρ_samples.shape
     J = len(M_1d)
     λ = λ.reshape(d,J) 
@@ -91,7 +71,7 @@ def Qproj(lamb, prev, Q):
 ### Stochastic projected gradient descent algorithm ###
 #######################################################
 def spgd(M_1d, dim, step_size, step_size_v, alpha, Q, Qinv, gradent_num, lamb0, mesh, trunc, grad_V, neg_log_PI, num_iter, stochastic_samples=1, 
-         accelerate=False, compute_W2=False, ground_cov=None, compute_KL=False, W_2_tol=1e-3, KL_tol=1e-3, stopping_cond=0, save_vals=False):
+         compute_W2=False, ground_cov=None, compute_KL=False, W_2_tol=1e-3, KL_tol=1e-3, stopping_cond=0, save_vals=False):
     
     v_init = np.zeros(dim)
     v = v_init
@@ -113,7 +93,7 @@ def spgd(M_1d, dim, step_size, step_size_v, alpha, Q, Qinv, gradent_num, lamb0, 
         lamb_cur = lamb_new.copy()
         x_samples = np.random.normal(size=(dim, stochastic_samples))
         gradcV, gradv = compute_potential_gradient_mc_highd(grad_V, M_1d, dim, alpha, lamb_cur, v, x_samples,compute_grad_v=compute_grad_v)
-        gradcH = compute_entropy_gradient_FAST_highd(alpha, lamb_cur, mesh, gradent_num)
+        gradcH = compute_entropy_gradient_highd(alpha, lamb_cur, mesh, gradent_num)
         gradKL = gradcV + gradcH
         
         step = (Qinv @ gradKL.T).T
@@ -137,7 +117,7 @@ def spgd(M_1d, dim, step_size, step_size_v, alpha, Q, Qinv, gradent_num, lamb0, 
             W2_vals.append( np.trace( ground_cov + sample_cov - 2*sqrtm(ground_cov**(1/2)@sample_cov@ground_cov**(1/2) )) )
 
         if compute_KL:
-            KL_val = compute_KL_mc_FAST(neg_log_PI, M_1d, mesh, trunc, alpha, lamb_new, v, ρ_samples)
+            KL_val = compute_KL_mc(neg_log_PI, M_1d, mesh, trunc, alpha, lamb_new, v, ρ_samples)
             KL_vals.append(KL_val)
             print("KL:", KL_val)
             KL_running_diff = np.average(KL_vals[-10:-1]) - np.average(KL_vals[-20:-10])
