@@ -5,7 +5,7 @@ $$\pi^\star = \text{argmin}_{\mu \in \mathcal{P}(\mathbb{R})^{\otimes d}} \ \tex
 where $\mathcal{P}(\mathbb{R})^{\otimes d}$ is the space of $d$-dimensional product measures. Our approach is based on what we call *polyhedral sets* in the Wasserstein space. The GIF below is an visualization of our approach for computing the mean-field approximation to a product Gaussian mixture using only access to $V$ and $\nabla V$. 
 
 <p align="center">
-<img align="middle" src="./assets/mixture_kde.gif" alt="KDE FIG" width="500" height="250" />
+<img align="middle" src="./assets/mixture_kde.gif" alt="KDE FIG" width="500" height="500" />
 </p>
 
 ## Examples
